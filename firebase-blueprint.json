@@ -1,0 +1,174 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and progress data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "username": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "geminiApiKey": { "type": "string" },
+        "onboardingReason": { "type": "string" },
+        "points": { "type": "number" },
+        "streak": { "type": "number" },
+        "premiumUnlocked": { "type": "boolean" },
+        "lastActive": { "type": "string", "format": "date-time" },
+        "currentActivity": { "type": "string" },
+        "totalStudyTimeMinutes": { "type": "number" },
+        "isOnline": { "type": "boolean" },
+        "questionsSolved": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "lastAction": { "type": "string" },
+        "bio": { "type": "string" }
+      },
+      "required": ["uid", "username", "displayName", "points"]
+    },
+    "Resource": {
+      "title": "Resource",
+      "description": "Shared study resource",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "date": { "type": "string" },
+        "url": { "type": "string" },
+        "fileData": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileSize": { "type": "number" },
+        "addedBy": { "type": "string" }
+      },
+      "required": ["title", "type", "date"]
+    },
+    "Action": {
+      "title": "Action",
+      "description": "Recent study action by a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "text", "timestamp"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Notice bulletin with optional PDF attachment posted by an admin",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "author": { "type": "string" },
+        "pdfData": { "type": "string" },
+        "pdfName": { "type": "string" },
+        "pdfUrl": { "type": "string" },
+        "pdfSize": { "type": "string" },
+        "isPinned": { "type": "boolean" }
+      },
+      "required": ["text", "timestamp"]
+    },
+    "OTP": {
+      "title": "OTP",
+      "description": "One-time password for login",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "code": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "code", "expiresAt"]
+    },
+    "ChallengeRoom": {
+      "title": "Challenge Room",
+      "description": "A 1v1 duel room",
+      "type": "object",
+      "properties": {
+        "roomCode": { "type": "string" },
+        "hostId": { "type": "string" },
+        "hostName": { "type": "string" },
+        "guestId": { "type": "string" },
+        "guestName": { "type": "string" },
+        "status": { "type": "string", "enum": ["waiting", "playing", "completed"] },
+        "subject": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "hostScore": { "type": "number" },
+        "guestScore": { "type": "number" },
+        "currentQuestionIndex": { "type": "number" }
+      },
+      "required": ["roomCode", "hostId", "hostName", "status", "createdAt", "expiresAt"]
+    },
+    "MockTestResult": {
+      "title": "Mock Test Result",
+      "description": "Real-time mock test score submitted by student",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "district": { "type": "string" },
+        "subject": { "type": "string" },
+        "topic": { "type": "string" },
+        "score": { "type": "number" },
+        "total": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "points": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "board": { "type": "string" }
+      },
+      "required": ["userId", "displayName", "subject", "score", "total", "points", "timestamp"]
+    },
+    "FocusSession": {
+      "title": "Focus Session",
+      "description": "Real-time active study session for focus room",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "subject": { "type": "string" },
+        "status": { "type": "string" },
+        "lastPing": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "userName", "subject", "status", "lastPing"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/resources": {
+      "schema": "Resource",
+      "description": "Shared study resources"
+    },
+    "/actions": {
+      "schema": "Action",
+      "description": "Live feed of study actions"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "Admin notice bulletins"
+    },
+    "/otps/{email}": {
+      "schema": "OTP",
+      "description": "OTP codes for email login"
+    },
+    "/challenges/{challengeId}": {
+      "schema": "ChallengeRoom",
+      "description": "1v1 Challenge Rooms"
+    },
+    "/mock_test_results/{resultId}": {
+      "schema": "MockTestResult",
+      "description": "Real-time mock test scores for live leaderboard"
+    },
+    "/focus_sessions/{sessionId}": {
+      "schema": "FocusSession",
+      "description": "Live active peers focusing in study room"
+    }
+  }
+}

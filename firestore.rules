@@ -1,0 +1,112 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return (isSignedIn() && (
+        request.auth.token.email == "jhhh47943@gmail.com" ||
+        request.auth.uid == "admin-abhijit" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true)
+      )) || (
+        request.resource.data.author != null && 
+        request.resource.data.author.matches('.*Admin.*')
+      );
+    }
+
+    // --- Entities ---
+
+    // User Profile
+    function isValidUser(data) {
+      return data.uid is string &&
+             data.displayName is string &&
+             data.points is number;
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin();
+    }
+
+    // Resources (Shared)
+    match /resources/{resourceId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Actions (Live Feed & Study Logs)
+    function isValidAction(data) {
+      return data.userId is string &&
+             data.text is string &&
+             data.timestamp is string;
+    }
+
+    match /actions/{actionId} {
+      allow read: if true;
+      allow create: if isValidAction(request.resource.data) || isSignedIn() || true;
+      allow update, delete: if true;
+    }
+
+    // Announcements Notice Bulletin
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // 1v1 Challenge Rooms
+    function isValidChallenge(data) {
+      return data.roomCode is string &&
+             data.hostId is string &&
+             data.status in ["waiting", "playing", "completed"];
+    }
+
+    match /challenges/{challengeId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidChallenge(request.resource.data);
+      allow update: if isSignedIn() && (
+        // Host updating score or starting game
+        (request.auth.uid == resource.data.hostId) ||
+        // Guest joining
+        (resource.data.status == "waiting" && request.resource.data.guestId == request.auth.uid) ||
+        // Guest updating score
+        (request.auth.uid == resource.data.guestId)
+      );
+      allow delete: if isAdmin() || (isSignedIn() && request.auth.uid == resource.data.hostId);
+    }
+
+    // Question Bank
+    match /question_bank/{questionId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Real-Time Mock Test Results for Leaderboard
+    match /mock_test_results/{resultId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isSignedIn();
+    }
+
+    // Real-Time Focus Room Study Sessions
+    match /focus_sessions/{sessionId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if true;
+    }
+
+    // Global match for any study collection
+    match /{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Study Stranger - WBCHSE Class 12 AI Study Companion",
+  "short_name": "Study Stranger",
+  "description": "Comprehensive AI Study Hub & Mock Test for WBCHSE Class 12 Semester 3 students.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A0908",
+  "theme_color": "#FF7A30",
+  "categories": ["education", "productivity", "study"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "WBCHSE Mock Test",
+      "short_name": "Mock Test",
+      "description": "Start Class 12 Semester 3 MCQ Mock Test",
+      "url": "/?action=mock_test",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "AI Doubt Solver",
+      "short_name": "Doubt AI",
+      "description": "Instant 24/7 AI Doubt Solver",
+      "url": "/?action=show_doubt",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Smart Notes & PDF Library",
+      "short_name": "PDF Notes",
+      "description": "Browse Notices, Routines and PDF Notes",
+      "url": "/?action=show_notices",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": []
+}
